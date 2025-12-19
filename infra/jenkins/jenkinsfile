@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        ENV = "dev"
+        AWS_REGION = "me-central-1"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages{
@@ -15,8 +16,20 @@ pipeline {
         stage("Environment Variables") {
             steps{
                 sh '''
-                    echo "Environment: $ENV"
+                    echo "AWS Region: $AWS_REGION"
+                    echo "Image Version: $IMAGE_TAG"
                 '''
+            }
+        }
+
+        stage("Terraform apply") {
+            steps{
+                dir(infra/terraform) {
+                    sh '''
+                        terraform init
+                        ls
+                    '''
+                }
             }
         }
 
@@ -24,6 +37,8 @@ pipeline {
             steps{
                 sh '''
                     echo "Building image..."
+                    pwd
+                    tree -L 3
                 '''
             }
         }
@@ -45,7 +60,7 @@ pipeline {
         }
 
     }
-    
+
     post {
         success {
             echo "Pipeline completed successfully"
