@@ -24,7 +24,7 @@ pipeline {
 
         stage("Terraform apply") {
             steps{
-                dir(infra/terraform) {
+                dir('infra/terraform') {
                     sh '''
                         terraform init
                         ls
@@ -37,8 +37,8 @@ pipeline {
             steps{
                 sh '''
                     echo "Building image..."
-                    pwd
-                    tree -L 3
+                    
+                
                 '''
             }
         }
@@ -68,10 +68,6 @@ pipeline {
 
         failure {
             echo "Pipeline failed"
-        }
-
-        always {
-            cleanWs()
         }
     }
 }
